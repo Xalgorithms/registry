@@ -26,3 +26,4 @@ config/secrets.yml
 /tmp
 db/*.sqlite3
 
+public/assets

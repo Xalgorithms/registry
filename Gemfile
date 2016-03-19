@@ -7,7 +7,9 @@ gem 'rails', '4.2.4'
 gem 'rails-observers'
 gem 'responders', '~> 2.0'
 gem 'slim-rails'
-# gem 'uglifier', '>= 1.3.0'
+gem 'jquery-rails'
+gem 'turbolinks'
+#gem 'uglifier', '>= 1.3.0'
 
 # style
 gem 'sass-rails'
