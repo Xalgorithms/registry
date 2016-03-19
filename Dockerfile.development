@@ -1,0 +1,12 @@
+FROM rails:4.2.6
+
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY Gemfile /app
+COPY Gemfile.lock /app
+RUN bundle install --without production
+
+COPY . /app
+ENV RAILS_ENV development
+ENV RACK_ENV development
