@@ -31,10 +31,12 @@ module Api
       end
 
       def index
-        results = @rules.inject({}) do |o, rule|
+        versions = @rules.inject({}) do |o, rule|
           o.merge(rule.name => o.fetch(rule.name, []) << rule.version)
-        end.map do |name, versions|
-          { name: name, versions: versions }
+        end
+
+        results = @rules.map do |rule|
+          { name: rule.name, id: rule.public_id, versions: versions.fetch(rule.name, nil) }
         end
         render(json: results)
       end

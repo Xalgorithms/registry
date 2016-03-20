@@ -122,6 +122,7 @@ describe Api::V1::RulesController, type: :controller do
       response_json.each do |o|
         name = o.fetch('name', nil)
         expect(name).to_not be_nil
+        expect(o.fetch('id', nil)).to_not be_nil
 
         expect(expected).to have_key(name)
         expect(o.fetch('versions', [])).to eql(expected[name])
