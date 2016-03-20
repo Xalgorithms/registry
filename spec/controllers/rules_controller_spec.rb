@@ -106,41 +106,43 @@ describe Api::V1::RulesController, type: :controller do
     end
     
     it 'lists all rules with versions' do
-      names = rand_array_of_words(5)
+      vals = rand_array_of_words(5).map do |name|
+        { name: name, public_id: UUID.generate }
+      end
 
-      expected = rand_times(20).map do
-        create(:rule, name: rand_one(names), version: Faker::Number.hexadecimal(6))
+      versions = rand_times(10).map do
+        create(:rule, rand_one(vals).merge(version: Faker::Number.hexadecimal(6)))
       end.inject({}) do |o, rule|
         o.merge(rule.name => o.fetch(rule.name, []) << rule.version)
+      end
+
+      expected = Rule.all.inject({}) do |o, rule|
+        o.merge(rule.name => { 'id' => rule.public_id, 'versions' => versions.fetch(rule.name) })
       end
 
       get(:index)
 
       expect(response).to be_success
       expect(response).to have_http_status(200)
-      
-      response_json.each do |o|
-        name = o.fetch('name', nil)
-        expect(name).to_not be_nil
-        expect(o.fetch('id', nil)).to_not be_nil
 
-        expect(expected).to have_key(name)
-        expect(o.fetch('versions', [])).to eql(expected[name])
-      end
+      expect(response_json).to eql(expected)
     end
     
     it 'delivers versions when all rules of a name are requested' do
-      names = rand_array_of_words(5)
-
-      counts = names.inject({}) do |o, name|
-        count = rand_times(10).map do |i|
-          create(:rule, name: name, version: i.to_s)
-        end.length
-        
-        o.merge(name => count)
+      vals = rand_array_of_words(5).map do |name|
+        { name: name, public_id: UUID.generate }
       end
 
-      names.each do |name|
+      counts = vals.inject({}) do |o, v|
+        count = rand_times(10).map do |i|
+          create(:rule, v.merge(version: i.to_s))
+        end.length
+        
+        o.merge(v[:name] => count)
+      end
+
+      vals.each do |v|
+        name = v[:name]
         rules = Rule.where(name: name)
         expect(rules.length).to eql(counts[name])
 
@@ -205,7 +207,7 @@ describe Api::V1::RulesController, type: :controller do
       end
     end
 
-    it 'should update a rule using PUT where name is the id' do
+    it 'should generate a new rule when updating with a new version' do
       rand_times.map do
         create(:rule)
       end.each do |rule|
@@ -216,33 +218,20 @@ describe Api::V1::RulesController, type: :controller do
           expect(response).to be_success
           expect(response).to have_http_status(200)
 
-          rule = Rule.find_by(name: rule.name, version: ver)
-          expect(rule).to_not be_nil
+          prev_rule = Rule.find_by(name: rule.name, version: rule.version)
+          expect(prev_rule).to_not be_nil
+          expect(prev_rule.public_id).to eql(rule.public_id)
+          
+          new_rule = Rule.find_by(name: rule.name, version: ver)
+          expect(new_rule).to_not be_nil
+          # FIX ME: this fails sometimes when there is no network
+          expect(new_rule.public_id).to eql(prev_rule.public_id)
 
-          expect(response_json.fetch('public_id', nil)).to eql(rule.public_id)
+          expect(response_json.fetch('public_id', nil)).to eql(new_rule.public_id)
         end
       end
     end
 
-    it 'should update a rule using PUT where public_id is the id' do
-      rand_times.map do
-        create(:rule)
-      end.each do |rule|
-        @request.headers['Content-Type'] = 'application/json'
-        rand_array_of_hexes(5).each do |ver|
-          put(:update, id: rule.public_id, rule: { version: ver})
-
-          expect(response).to be_success
-          expect(response).to have_http_status(200)
-
-          rule = Rule.find_by(name: rule.name, version: ver)
-          expect(rule).to_not be_nil
-
-          expect(response_json.fetch('public_id', nil)).to eql(rule.public_id)
-        end
-      end
-    end
-    
     it 'should create rules when PUTting a non-existing rule' do
       rand_array_of_words.each do |name|
         @request.headers['Content-Type'] = 'application/json'
@@ -270,6 +259,7 @@ describe Api::V1::RulesController, type: :controller do
 
         rule = Rule.find_by(name: name)
         expect(rule).to_not be_nil
+        # FIXME: this fails sometimes when there is no network (uuid)
         expect(rule.repository).to eql(repo)
       end
     end

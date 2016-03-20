@@ -13,13 +13,10 @@ module Api
         repo_public_id = args.fetch('repository', {}).fetch('id', nil)
         repo = Repository.find_by(public_id: repo_public_id)
         args = args.except('repository').merge(repository: repo)
-        if @rule
-          @rule.update_attributes(args)
-          render(json: { public_id: @rule.public_id })
-        elsif params.key?('id')
-          @rule = Rule.create(args.merge(name: params['id'], public_id: UUID.generate))
-          render(json: { public_id: @rule.public_id })
-        end
+
+        public_id = @rule ? @rule.public_id : UUID.generate
+        @rule = Rule.create(args.merge(name: params['id'], public_id: public_id))
+        render(json: { public_id: @rule.public_id })
       end
       
       def by_version_content
@@ -31,13 +28,12 @@ module Api
       end
 
       def index
-        versions = @rules.inject({}) do |o, rule|
-          o.merge(rule.name => o.fetch(rule.name, []) << rule.version)
+        results = @rules.inject({}) do |o, rule|
+          ro = o.fetch(rule.name, { id: rule.public_id, versions: [] })
+          ro[:versions] << rule.version
+          o.merge(rule.name => ro)
         end
 
-        results = @rules.map do |rule|
-          { name: rule.name, id: rule.public_id, versions: versions.fetch(rule.name, nil) }
-        end
         render(json: results)
       end
       
