@@ -35,6 +35,7 @@ group :development, :test do
   gem 'pry-rails'
   gem "rspec-rails", "~> 3.0"
   gem 'database_cleaner'
+  gem 'fuubar'
 end
 
 group :production, :staging do

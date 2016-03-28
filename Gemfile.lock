@@ -85,6 +85,9 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     font-awesome-rails (4.5.0.1)
       railties (>= 3.2, < 5.1)
+    fuubar (2.0.0)
+      rspec (~> 3.0)
+      ruby-progressbar (~> 1.4)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
@@ -161,6 +164,10 @@ GEM
     rake (11.1.1)
     responders (2.1.1)
       railties (>= 4.2.0, < 5.1)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -178,6 +185,7 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    ruby-progressbar (1.7.5)
     sass (3.4.21)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
@@ -241,6 +249,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   font-awesome-rails
+  fuubar
   jquery-rails
   mongoid (~> 5.1.0)
   multi_json
