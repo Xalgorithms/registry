@@ -39,8 +39,8 @@ end
 
 group :production, :staging do
   gem 'pg'
-  gem 'foreman'
   gem 'puma'
+  gem 'rails_12factor'
 end
 
 group :development do
