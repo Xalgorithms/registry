@@ -1,3 +1,5 @@
+require 'remotes/client'
+
 module Api
   module V1
     class RulesController < ActionController::Base
