@@ -59,7 +59,7 @@ Rails.application.routes.draw do
       get 'rules/:ns/:name/:version', to: 'rules#by_ns_name_version'
 
       resources :repositories, only: [:create, :show, :update, :destroy] do
-        resources :rules, only: [:create, :update]
+        resources :rules, only: [:create, :update, :destroy]
       end
     end
   end

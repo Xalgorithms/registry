@@ -159,4 +159,15 @@ describe Api::V1::RulesController, type: :controller do
       end
     end
   end
+
+  it 'deletes a rule by public_id' do
+    make_rules.each do |rule|
+      delete(:destroy, { repository_id: rule.repository.public_id, id: rule.public_id })
+
+      expect(response).to be_success
+      expect(response).to have_http_status(200)
+
+      expect(Rule.where(public_id: rule.public_id).first).to be_nil
+    end
+  end
 end

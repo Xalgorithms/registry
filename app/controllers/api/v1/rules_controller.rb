@@ -33,6 +33,11 @@ module Api
         render(json: { id: @rule.public_id })
       end
 
+      def destroy
+        Rule.where(public_id: params['id']).first.destroy
+        render(nothing: true)
+      end
+
       private
 
       def rule_params
