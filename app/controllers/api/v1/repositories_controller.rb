@@ -42,7 +42,7 @@ module Api
 
       def maybe_find_repo
         id = params.fetch('id', nil)
-        @repo = Repository.find_by(public_id: id)
+        @repo = Repository.where(public_id: id).first
       end
       
       def repository_params

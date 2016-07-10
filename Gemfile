@@ -30,16 +30,13 @@ gem 'factory_girl_rails'
 gem 'faker'
 
 group :development, :test do
-  gem 'sqlite3'
   gem 'byebug'
+  gem 'fuubar'
   gem 'pry-rails'
   gem "rspec-rails", "~> 3.0"
-  gem 'database_cleaner'
-  gem 'fuubar'
 end
 
 group :production, :staging do
-  gem 'pg'
   gem 'puma'
   gem 'rails_12factor'
 end

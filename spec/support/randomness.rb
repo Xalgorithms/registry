@@ -1,6 +1,6 @@
 module Randomness
   def rand_one(a)
-    a[rand(a.length)].dup
+    a[rand(a.length)]
   end
     
   def rand_times(i = 10)

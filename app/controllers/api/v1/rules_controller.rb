@@ -13,7 +13,7 @@ module Api
       def update
         args = rule_params
         repo_public_id = args.fetch('repository', {}).fetch('id', nil)
-        repo = Repository.find_by(public_id: repo_public_id)
+        repo = Repository.where(public_id: repo_public_id).first
         args = args.except('repository').merge(repository: repo)
 
         public_id = @rule ? @rule.public_id : UUID.generate
@@ -70,16 +70,16 @@ module Api
         id = params.fetch('id', nil)
         version = params.fetch('version', nil)
         if id && version
-          @rule = Rule.find_by(name: id, version: version)
-          @rule = Rule.find_by(public_id: id, version: version) unless @rule
+          @rule = Rule.where(name: id, version: version).first
+          @rule = Rule.where(public_id: id, version: version).first unless @rule
         end
       end
 
       def maybe_find_rule
         id = params.fetch('id', nil)
         if id
-          @rule = Rule.find_by(name: id)
-          @rule = Rule.find_by(public_id: id) if !@rule
+          @rule = Rule.where(name: id).first
+          @rule = Rule.where(public_id: id).first if !@rule
         end
       end
 

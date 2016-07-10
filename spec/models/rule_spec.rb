@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe Rule, type: :model do
   include Randomness
   
+  before(:all) do
+    Repository.destroy_all
+    Rule.destroy_all
+  end
+  
   it 'should belong to a repository' do
     repositories = rand_times.map { create(:repository) }
     ids = rand_times.map do

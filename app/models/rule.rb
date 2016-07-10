@@ -1,7 +1,9 @@
-class Rule < ActiveRecord::Base
-  belongs_to :repository
+class Rule
+  include Mongoid::Document
 
-  def document
-    RuleDocument.where(_id: doc_id).first
-  end
+  field :name,      type: String
+  field :public_id, type: String
+  field :version,   type: String
+  
+  belongs_to :repository
 end

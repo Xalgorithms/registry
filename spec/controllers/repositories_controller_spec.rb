@@ -58,7 +58,9 @@ describe Api::V1::RepositoriesController, type: :controller do
       expect(response).to be_success
       expect(response).to have_http_status(200)
 
-      expect(Repository.find_by_id(repo.id)).to be_nil
+      expect {
+        Repository.find(repo.id)
+      }.to raise_error(Mongoid::Errors::DocumentNotFound)
     end
   end
 
