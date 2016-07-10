@@ -12,8 +12,8 @@ module Remotes
       end
     end
 
-    def get(name, version)
-      resp = @conn.get("/rules/#{name}/versions/#{version}")
+    def get(public_id, version)
+      resp = @conn.get("/rules/#{public_id}/versions/#{version}")
       resp.success? ? resp.body : nil
     end
   end

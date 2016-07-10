@@ -13,6 +13,11 @@ describe Api::V1::RepositoriesController, type: :controller do
     end
   end
   
+  before(:all) do
+    Repository.destroy_all
+    Rule.destroy_all
+  end
+  
   it 'will create a new repository' do
     rand_array_of_urls.map do |url|
       post(:create, repository: { url: url })

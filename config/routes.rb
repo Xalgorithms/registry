@@ -56,11 +56,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :rules, only: [:index, :show, :update] do
-        get ':version/content', to: 'rules#by_version_content', as: :rule_content, on: :member
-      end
+      get 'rules/:ns/:name/:version', to: 'rules#by_ns_name_version'
 
-      resources :repositories, only: [:create, :show, :update, :destroy]
+      resources :repositories, only: [:create, :show, :update, :destroy] do
+        resources :rules, only: [:create, :update]
+      end
     end
   end
 end
