@@ -13,8 +13,14 @@ module Remotes
     end
 
     def get(public_id, version)
-      resp = @conn.get("/rules/#{public_id}/versions/#{version}")
-      resp.success? ? resp.body : nil
+      # TODO: the API prefix should probably be in the registration??
+      resp = @conn.get("/api/v1/rules/#{public_id}/versions/#{version}")
+      if resp.success?
+        Rails.logger.info("< #{resp.status}: #{resp.body}")
+        yield(resp.body)
+      else
+        Rails.logger.error("! Failed to get content")
+      end
     end
   end
 end

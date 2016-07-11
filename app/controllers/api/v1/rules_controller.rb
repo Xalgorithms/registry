@@ -7,10 +7,12 @@ module Api
         @rule = Rule.where(ns: params[:ns], name: params[:name], version: params[:version]).first
         if @rule && !@rule.content
           cl = Remotes::Client.new(@rule.repository.url)
-          cl.get(@rule.public_id, @rule.version) do |content|
+          res = cl.get(@rule.public_id, @rule.version) do |content|
             @rule.content = content
             @rule.save
           end
+        else
+          Rails.logger.warn("? Failed locate rule (ns=#{params[:ns]}; name: #{params[:name]}; version=#{params[:version]})")
         end
 
         if @rule && @rule.content
