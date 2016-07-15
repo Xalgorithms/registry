@@ -5,11 +5,14 @@ module Api
     class RulesController < ActionController::Base
       def by_ns_name_version
         @rule = Rule.where(ns: params[:ns], name: params[:name], version: params[:version]).first
-        if @rule && !@rule.content
-          cl = Remotes::Client.new(@rule.repository.url)
-          res = cl.get(@rule.public_id, @rule.version) do |content|
-            @rule.content = content
-            @rule.save
+        if @rule
+          if !@rule.content
+            Rails.logger.info('# getting content for the rule')
+            cl = Remotes::Client.new(@rule.repository.url)
+            res = cl.get(@rule.public_id, @rule.version) do |content|
+              @rule.content = content
+              @rule.save
+            end
           end
         else
           Rails.logger.warn("? Failed locate rule (ns=#{params[:ns]}; name: #{params[:name]}; version=#{params[:version]})")
