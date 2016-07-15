@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'rules/:ns/:name/:version', to: 'rules#by_ns_name_version'
 
+      resources :namespaces, only: [:index]
       resources :repositories, only: [:create, :show, :update, :destroy] do
         resources :rules, only: [:create, :update, :destroy]
       end
