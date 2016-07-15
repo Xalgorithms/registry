@@ -1,0 +1,4 @@
+ul
+  - @rules.each do |rule|
+    li= "#{rule.ns}:#{rule.name}:#{rule.version} (#{rule.repository.url})"
+      

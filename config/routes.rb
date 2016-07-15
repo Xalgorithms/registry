@@ -54,6 +54,10 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
+  root 'rules#index'
+  
+  resources :rules, only: [:index]
+  
   namespace :api do
     namespace :v1 do
       get 'rules/:ns/:name/:version', to: 'rules#by_ns_name_version'
