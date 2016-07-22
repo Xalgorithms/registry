@@ -5,7 +5,7 @@ require 'remotes/client'
 describe Api::V1::RulesController, type: :controller do
   include Randomness
   
-  before(:all) do
+  before(:each) do
     Repository.destroy_all
     Rule.destroy_all
   end
@@ -104,6 +104,38 @@ describe Api::V1::RulesController, type: :controller do
 
       expect(response.body).to be_empty
     end
+  end
+
+  it 'provides all Rules with a syncho key' do
+    rules = rand_array_of_models(:rule)
+    latest = Rule.all.pluck(:updated_at).sort { |a, b| b - a }.first.to_s(:number)
+
+    get(:index)
+
+    expect(response).to be_success
+    expect(response_json).to_not be_nil
+    expect(response_json).to have_key('rules')
+    expect(response_json['rules']).to eql(Rule.all.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" })
+    expect(response_json).to have_key('since')
+    expect(response_json['since']).to eql(latest)
+  end
+
+  it 'provides all Rules after a synchro key' do
+    rules = rand_array_of_models(:rule, updated_at: Faker::Time.backward(10))
+    latest = Rule.all.pluck(:updated_at).sort { |a, b| b - a }.first.to_s(:number)
+
+    rules = rand_array_of_models(:rule)
+
+    get(:since, key: latest)
+    
+    latest = Rule.all.pluck(:updated_at).sort { |a, b| b - a }.first.to_s(:number)
+
+    expect(response).to be_success
+    expect(response_json).to_not be_nil
+    expect(response_json).to have_key('rules')
+    expect(response_json['rules']).to eql(rules.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" })
+    expect(response_json).to have_key('since')
+    expect(response_json['since']).to eql(latest)
   end
 
   it 'should accept new rules for a repository' do

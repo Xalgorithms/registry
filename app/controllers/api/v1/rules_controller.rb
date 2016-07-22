@@ -25,6 +25,21 @@ module Api
         end
       end
 
+      def index
+        rule_collection do
+          Rule.all.to_a
+        end
+      end
+
+      def since
+        rule_collection do
+          Rule.all.select do |rm|
+            dt = rm.updated_at || Time.now
+            dt.to_s(:number).to_i > params[:key].to_i
+          end
+        end
+      end
+      
       def create
         @rule = Rule.create(rule_params.merge(public_id: UUID.generate))
         @rule.repository = Repository.where(public_id: params[:repository_id]).first
@@ -45,6 +60,16 @@ module Api
 
       private
 
+      def rule_collection
+        rules = yield
+        latest = rules.map(&:updated_at).compact.sort { |a, b| b - a }.first.to_s(:number)
+        latest = Time.now.to_s(:number) if !latest
+        render(json: {
+                 rules: rules.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" },
+                 since: latest
+               })        
+      end
+      
       def rule_params
         params.require(:rule).permit(:ns, :name, :version)
       end

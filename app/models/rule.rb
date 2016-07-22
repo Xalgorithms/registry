@@ -1,5 +1,6 @@
 class Rule
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :ns,        type: String
   field :name,      type: String
