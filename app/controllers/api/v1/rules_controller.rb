@@ -26,17 +26,12 @@ module Api
       end
 
       def index
-        rule_collection do
-          Rule.all.to_a
-        end
+        rule_collection
       end
 
       def since
-        rule_collection do
-          Rule.all.select do |rm|
-            dt = rm.updated_at || Time.now
-            dt.to_s(:number).to_i > params[:key].to_i
-          end
+        rule_collection do |all_rules|
+          all_rules.where(updated_at: { '$gt' => Time.parse(params['since']) })
         end
       end
       
@@ -60,14 +55,14 @@ module Api
 
       private
 
-      def rule_collection
-        rules = yield
+      def rule_collection(&bl)
+        all_rules = Rule.all.order_by(updated_at: 'desc')
+        rules = bl ? bl.call(all_rules) : all_rules
 
-        latest_update = rules.map(&:updated_at).compact.sort { |a, b| b - a }.first
-        latest = (latest_update ? latest_update : Time.now).to_s(:number)
+        latest_update = rules.last ? rules.last : all_rules.last
         render(json: {
                  rules: rules.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" },
-                 since: latest
+                 since: latest_update.updated_at.to_s(:number)
                })        
       end
       

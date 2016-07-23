@@ -115,20 +115,21 @@ describe Api::V1::RulesController, type: :controller do
     expect(response).to be_success
     expect(response_json).to_not be_nil
     expect(response_json).to have_key('rules')
-    expect(response_json['rules']).to eql(Rule.all.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" })
+    expect(response_json['rules']).to eql(Rule.all.order_by(updated_at: 'desc').map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" })
     expect(response_json).to have_key('since')
     expect(response_json['since']).to eql(latest)
   end
 
   it 'provides all Rules after a synchro key' do
     rules = rand_array_of_models(:rule, updated_at: Faker::Time.backward(10))
-    latest = Rule.all.pluck(:updated_at).sort { |a, b| b - a }.first.to_s(:number)
+    latest = Rule.all.order_by(updated_at: 'desc').pluck(:updated_at).first.to_s(:number)
 
     rules = rand_array_of_models(:rule)
 
-    get(:since, key: latest)
+    get(:since, since: latest)
     
-    latest = Rule.all.pluck(:updated_at).sort { |a, b| b - a }.first.to_s(:number)
+    rules = Rule.all.where(updated_at: { '$gt' => Time.parse(latest) }).order_by(updated_at: 'desc')
+    latest = Rule.all.order_by(updated_at: 'desc').pluck(:updated_at).first.to_s(:number)
 
     expect(response).to be_success
     expect(response_json).to_not be_nil
