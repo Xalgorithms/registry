@@ -62,8 +62,9 @@ module Api
 
       def rule_collection
         rules = yield
-        latest = rules.map(&:updated_at).compact.sort { |a, b| b - a }.first.to_s(:number)
-        latest = Time.now.to_s(:number) if !latest
+
+        latest_update = rules.map(&:updated_at).compact.sort { |a, b| b - a }.first
+        latest = (latest_update ? latest_update : Time.now).to_s(:number)
         render(json: {
                  rules: rules.map { |rm| "#{rm.ns}:#{rm.name}:#{rm.version}" },
                  since: latest
