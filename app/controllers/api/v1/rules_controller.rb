@@ -30,7 +30,7 @@ module Api
       end
 
       def since
-        rule_collection do |all_rules|
+        rv = rule_collection do |all_rules|
           # TODO: +1.second is a hack. let's do better
           all_rules.where(updated_at: { '$gt' => Time.parse(params['since']) + 1.second })
         end
@@ -57,7 +57,7 @@ module Api
       private
 
       def rule_collection(&bl)
-        all_rules = Rule.all.order_by(updated_at: 'desc')
+        all_rules = Rule.all.order_by(updated_at: 'asc')
         rules = bl ? bl.call(all_rules) : all_rules
 
         latest_update = rules.last ? rules.last : all_rules.last
