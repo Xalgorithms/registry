@@ -11,6 +11,9 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 
+# JS runtime
+gem 'therubyracer', platforms: :ruby
+
 # style
 gem 'sass-rails'
 gem 'bulma-rails'
