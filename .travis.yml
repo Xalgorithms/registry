@@ -1,0 +1,22 @@
+sudo: required
+language: ruby
+
+services:
+  - docker
+before_install:
+  - "./start_containers.sh"
+
+script:
+  - bundle exec rake spec
+
+after_success:
+  - "./build_images.sh"
+  - "./publish_images.sh"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: L8+sNNtRR0PKeEohjZPkC+GzlHUWh+MjBKk0rW0AsK0LFN/eAd9E4P5bgfRc7NB/wbdM3OuXlEmIuVmOChy/T79bjlG/D91srfrWuMbKTV+8nmz51JEjyfqs/U/jtffJnji2VgoAQho3WSP4NZuGikGvu++BOiMg2BN/DVUQbqDUa8Siy+c7nbwJPCvS0PBnsPNgbCOvud+fZQKKo7EpXjVAxT8DJZM1HcSBuexBLRoKtNSw+clUJqKnsy26DPkAxrmIfWfMBlCKcwnl9NGEePcbfxIDqcxBky3tdVsD51Ny91E+vcWSpt27/N3ebOKgd9f5aGCZZSjoTz9f0N3kpI9u2nuPkyWm3WX/vc/n2zR082hwdzWLkkLpF27lrqdMxxSwGk6JEwGSe17y/g/S+U37x87Wz2e1W1zd+OMNG5QNi1ekpg9CCh0LeCCSpNgf96NrMM5HU1klRWCnnGrYi1RZtJtTsHc09kj23CYDo/HqZ+sdMDtwh8+lwc6m6kUV10Qom9Y7ojk4SHDR+eDFdKhfKGwcSaIAlq0P0bXgZyicCtm9/s6/YqIwWdGDgHs2Ysk6xxkSqFRCwMKdezCVSYhBJWkwhpNHRDKX6eYZVDSgdUi7njtYhO/I2IDYMcTT8NgcUf2a1bAawLRxGNx+7wUJpK6JNkc3x01kcGxGuww=
+  file: ''
+  on:
+    repo: Xalgorithms/xa-registry
