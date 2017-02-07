@@ -145,7 +145,7 @@ describe Api::V1::RulesController, type: :controller do
     nss = rand_array_of_words(5)
 
     rand_times.map do
-      { repository_id: rand_one(repos).public_id, rule: { ns: rand_one(nss), name: rand_one(names), version: Faker::Number.hexadecimal(6) } }
+      { repository_id: rand_one(repos).public_id, rule: { ns: rand_one(nss), name: rand_one(names), id: UUID.generate, version: Faker::Number.hexadecimal(6) } }
     end.each do |vals|
       @request.headers['Content-Type'] = 'application/json'
 
@@ -156,8 +156,7 @@ describe Api::V1::RulesController, type: :controller do
       expect(response_json).to_not be_nil
 
       expect(response_json).to have_key('id')
-      public_id = response_json['id']
-      rule = Rule.where(public_id: public_id).first
+      rule = Rule.where(public_id: vals[:rule][:id]).first
       expect(rule).to_not be_nil
       expect(rule.repository).to eql(Repository.where(public_id: vals[:repository_id]).first)
       expect(rule.ns).to eql(vals[:rule][:ns])

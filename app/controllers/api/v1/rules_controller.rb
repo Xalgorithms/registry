@@ -37,7 +37,7 @@ module Api
       end
       
       def create
-        @rule = Rule.create(rule_params.merge(public_id: UUID.generate))
+        @rule = Rule.create(rule_params.except(:id).merge(public_id: rule_params[:id]))
         @rule.repository = Repository.where(public_id: params[:repository_id]).first
         @rule.save
         render(json: { id: @rule.public_id})
@@ -68,7 +68,7 @@ module Api
       end
       
       def rule_params
-        params.require(:rule).permit(:ns, :name, :version)
+        params.require(:rule).permit(:ns, :name, :version, :id)
       end
     end
   end
