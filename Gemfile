@@ -33,6 +33,8 @@ gem 'uuid'
 gem 'factory_girl_rails'
 gem 'faker'
 
+gem 'puma'
+
 group :development, :test do
   gem 'byebug'
   gem 'fuubar'
@@ -41,13 +43,11 @@ group :development, :test do
 end
 
 group :production, :staging do
-  gem 'puma'
   gem 'rails_12factor'
 end
 
 group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
-  gem 'thin'
 end
 
