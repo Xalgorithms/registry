@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Registry
+    = stylesheet_link_tag "application", media: 'all', 'data-turbolinks-track' => true
+    = yield :stylesheets
+
+    = javascript_include_tag "application", 'data-turbolinks-track' => true
+    = yield :javascripts
+
+    = csrf_meta_tags
+
+    section.section
+      .container.is-fluid
+        = yield
+
+    = yield(:javascript)

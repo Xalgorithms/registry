@@ -17,7 +17,6 @@ gem 'therubyracer', platforms: :ruby
 # style
 gem 'sass-rails'
 gem 'bulma-rails'
-# gem 'bootstrap-sass', '~> 3.3.6'
 gem 'font-awesome-rails'
 
 # libraries
