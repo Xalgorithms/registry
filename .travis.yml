@@ -1,16 +1,16 @@
 sudo: required
 language: ruby
 rvm:
-  - 2.3.1
-
+- 2.3.1
 services:
-  - docker
+- docker
 before_install:
-  - "./start_containers.sh"
-
+- "./start_containers.sh"
 script:
-  - bundle exec rake spec
-
+- bundle exec rake spec
 after_success:
-  - "./build_images.sh"
-  - "./publish_images.sh"
+- "./build_images.sh"
+- "./publish_images.sh"
+notifications:
+  slack:
+    secure: rA174paf5DUf6juWJGLbQ2v89R1+9Dwhre+v69ubmPt4GEmvbPNRndRE7YjwqlFa+wUX8CTjTmubM3ixIf8+xFPSB9Ly+AzKSXFEi+gpColDtDZ8zWAatWF+y/HxNOmvyouup5FEVzKvpQGAX5noRQF6/Pf0IbRmWqMLFtFBO+8Yrpfz4zBp/neyLNL+XmnJ7X90rDnuGiIg2qm8Lo9xOT3VJCGU77af23FRM77DWbaV4hmB7gLYA2AUS8MA5PmV8tG4/i+fXMq8pAxJxigHA8tL4L3Ra27e8UW8+jAHpenb396li4Qh+GuZVlyL3pUcWxpGX3BWED4cmKi6XdpqTwg9WSGC1FMjfhiA37jWFQbSHd9xTXBDtpT1V8REzbmxUzypGbGk0RxHeBqcvNVFlIypK88Z/H1uvAzGpg64ZyI4iD0jDuvTtND4a3DOZJAU9pE4lbhc4GGeB0xcQAbk6mjMPk1cKNUID88uRHNGNUIRszOKaBAWukxa8LfKrxk60ZAg0OWBnTTgDrHc6K0RDDYyTIejiZcNDUvUyUUK6wlIv/7rSf/31lP2vsZKXspOsmwn5/OeBzoapwu5Mieuiyo4NoPDtgplV3u7CUkZAouYn2KLGBkB+UPJY5I1Yz496u3If3VjbBOpjRpYyIrLEYmYIcV3kKwUb5PL8Pk6SvE=
