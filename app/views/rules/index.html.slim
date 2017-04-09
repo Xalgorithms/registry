@@ -1,4 +1,10 @@
-ul
-  - @rules.each do |rule|
-    li= "#{rule.ns}:#{rule.name}:#{rule.version} (#{rule.repository.url})"
+.columns.is-multiline
+  - @rules.each do |k, rms|
+    .column.is-4
+      .card
+        header.card-header
+          .card-header-title= k
+        .card-content
+          - rms.each do |rm|
+            div= "#{rm.version} (#{rm.repository ? rm.repository.url : 'no repository' })"
       
